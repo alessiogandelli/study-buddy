@@ -1,0 +1,35 @@
+{
+  "sessions": [
+    {
+      "id": "397971851:397971851",
+      "data": {
+        "__scenes": {
+          "current": "GIOCA",
+          "state": {
+            "currentWord": {
+              "or": "de",
+              "tr": "they",
+              "points": 0.5,
+              "known": true,
+              "index": 21
+            },
+            "currentWordIndex": 18
+          },
+          "cursor": 1
+        }
+      }
+    },
+    {
+      "id": "529895213:529895213",
+      "data": {
+        "__scenes": {
+          "current": "GIOCA",
+          "state": {
+            "currentWordIndex": 14
+          },
+          "cursor": 1
+        }
+      }
+    }
+  ]
+}
