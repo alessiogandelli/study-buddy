@@ -1,10 +1,12 @@
-import { Context, Telegraf } from 'telegraf'
-import { Keyboard, Key  } from 'telegram-keyboard'
 import * as dotenv from 'dotenv'
+
+import { Context, Telegraf } from 'telegraf'
+import { Update } from 'telegraf/typings/core/types/typegram';
+import { Keyboard, Key } from 'telegram-keyboard'
+
+import RedisService from './Services/RedisService';
 import App from './Apps/App';
 import Rememo from './Apps/Rememo';
-import RedisService from './Services/RedisService';
-import { Update } from 'telegraf/typings/core/types/typegram';
 
 
 class StudyBot {
@@ -36,19 +38,31 @@ class StudyBot {
     }
 
     public loadApps() {
-        this.apps[Rememo.appname] = new Rememo(this.bot);
+        this.apps[Rememo.appname] = new Rememo(this.bot, this.redisService);
     }
 
     public commands() {
         this.bot.start((ctx) => ctx.reply('Ciao'));
         this.bot.command('apps', (ctx) => this.listApps(ctx));
-        this.bot.on('callback_query', (ctx) => this.selectApp(ctx));
         this.bot.command('currentApp', (ctx) => this.currentApp(ctx));
+        this.bot.on('callback_query', (ctx) => this.selectApp(ctx));
+    }
+
+    public handleCallbackQuery(ctx: Context<Update>) {
+        const callback = (ctx.callbackQuery as any)?.data;
+        const [ app, func, command ] = callback.split(':');
+
+        if (app === 'global') {
+            switch (func) {
+                case 'selectapp':
+                    return this.selectApp(ctx);
+            }
+        }
     }
 
     public async listApps(ctx: Context<Update>) {
         const keyboard = Keyboard.make([
-            Object.keys(this.apps).map(x => Key.callback('Rememo', 'rememo'))
+            Object.keys(this.apps).map(x => Key.callback('Rememo', 'global:selectapp:rememo'))
         ]).inline();
 
         return ctx.reply('Select an app', keyboard);

@@ -19,6 +19,10 @@ export default class RedisService {
         await this.redis.disconnect();
     }
 
+    public async client(): Redis.RedisClientType {
+        await this.redis;
+    }
+
     public async setUserSelectedApp(userId: number, app: string) {
         await this.redis.set(userId.toString(), app);
     }
